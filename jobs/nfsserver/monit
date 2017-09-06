@@ -1,0 +1,5 @@
+check process nfsserver
+  with pidfile /var/vcap/sys/run/nfsserver/nfsserver.pid
+  start program "/var/vcap/jobs/nfsserver/bin/nfsserver_ctl start"
+  stop program "/var/vcap/jobs/nfsserver/bin/nfsserver_ctl stop"
+  group vcap

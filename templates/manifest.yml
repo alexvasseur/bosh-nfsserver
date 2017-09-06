@@ -1,0 +1,42 @@
+# Hit ctrl-space for auto-complete
+---
+name: alex-nfsserver
+
+director_uuid: ((director_uuid))
+
+releases:
+- name: nfsserver
+  version: latest
+
+stemcells:
+- alias: trusty
+  os: ubuntu-trusty
+  version: latest
+
+instance_groups:
+- name: nfsserver
+  instances: 1
+  vm_type: ((vm_type))
+  persistent_disk_type: ((persistent_disk_type))
+  stemcell: trusty
+  azs: ((azs))
+  networks:
+    - name: ((network_name))
+      default: [dns, gateway]
+      #static_ips: ((nginx.static_ips))
+  lifecycle: service
+  jobs:
+  - name: nfsserver
+    release: nfsserver
+  properties:
+  env:
+    bosh:
+      password: ((vm_password))
+
+update:
+  canaries: 1
+  max_in_flight: 32
+  canary_watch_time: 1000-30000
+  update_watch_time: 1000-30000
+  serial: false
+

@@ -1,0 +1,12 @@
+director_uuid: <%= %x[bosh status --uuid] %>
+
+vm_type: t2.small 
+
+persistent_disk_type: 10240
+
+azs: [eu-west-1a]
+
+network_name: services
+
+vm_password: echo -n 'password' | mkpasswd --method=sha-512 --password-fd=0
+

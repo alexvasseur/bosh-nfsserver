@@ -1,0 +1,16 @@
+---
+name: nfsserver
+
+templates:
+  install.erb: bin/pre-start
+  ctl.erb: bin/nfsserver_ctl
+
+packages: []
+
+properties:
+ nfsserver.export_cidr:
+    description: "cidr range to use for nfs exports"
+    default: "10.0.0.0/8"
+ nfsserver.export_root_path:
+    description: "NFS root path"
+    default: "/var/vcap/store/nfsserver"

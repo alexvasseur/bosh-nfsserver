@@ -1,0 +1,44 @@
+#!/bin/bash
+
+set -e -x
+
+echo "Installing nfs server"
+
+apt-get update
+apt-get --assume-yes install nfs-kernel-server
+
+mkdir -p <%= p("nfsserver.export_root_path") %>/export/users
+mkdir -p <%= p("nfsserver.export_root_path") %>/export/vol1
+mkdir -p <%= p("nfsserver.export_root_path") %>/export/vol2
+mkdir -p <%= p("nfsserver.export_root_path") %>/export/vol3
+mkdir -p <%= p("nfsserver.export_root_path") %>/export2/certs
+
+chmod 777 <%= p("nfsserver.export_root_path") %>/export
+chmod 777 <%= p("nfsserver.export_root_path") %>/export2
+chmod 775 <%= p("nfsserver.export_root_path") %>/export/users
+chmod 775 <%= p("nfsserver.export_root_path") %>/export/vol1
+chmod 775 <%= p("nfsserver.export_root_path") %>/export/vol2
+chmod 775 <%= p("nfsserver.export_root_path") %>/export/vol3
+chmod 777 <%= p("nfsserver.export_root_path") %>/export2/certs
+
+chown root:vcap <%= p("nfsserver.export_root_path") %>/export/users
+chown root:vcap <%= p("nfsserver.export_root_path") %>/export/vol1
+chown root:vcap <%= p("nfsserver.export_root_path") %>/export/vol2
+chown root:vcap <%= p("nfsserver.export_root_path") %>/export/vol3
+
+mkdir -p /export
+mkdir -p /export2
+mount --bind <%= p("nfsserver.export_root_path") %>/export /export || true
+mount --bind <%= p("nfsserver.export_root_path") %>/export2 /export2 || true
+
+cat << EOF > /etc/exports
+/export        <%= p("nfsserver.export_cidr") %>(rw,fsid=0,no_subtree_check,async)
+/export/users  <%= p("nfsserver.export_cidr") %>(rw,nohide,no_subtree_check,async)
+/export/vol1   <%= p("nfsserver.export_cidr") %>(rw,nohide,no_subtree_check,async)
+/export/vol2   <%= p("nfsserver.export_cidr") %>(rw,nohide,no_subtree_check,async)
+/export/vol3   <%= p("nfsserver.export_cidr") %>(rw,nohide,no_subtree_check,async)
+/export2       <%= p("nfsserver.export_cidr") %>(rw,fsid=1,no_subtree_check,async,insecure)
+/export2/certs <%= p("nfsserver.export_cidr") %>(rw,nohide,no_subtree_check,async,insecure)
+EOF
+
+exit 0

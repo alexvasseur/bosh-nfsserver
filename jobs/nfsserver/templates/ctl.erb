@@ -1,0 +1,43 @@
+#!/bin/bash
+
+set -e
+
+RUN_DIR=/var/vcap/sys/run/nfsserver
+LOG_DIR=/var/vcap/sys/log/nfsserver
+PIDFILE=$RUN_DIR/nfsserver.pid
+
+SCRIPT=$(basename $0)
+mkdir -p /var/vcap/sys/log/monit
+
+exec 1>> /var/vcap/sys/log/monit/$SCRIPT.log
+exec 2>> /var/vcap/sys/log/monit/$SCRIPT.err.log
+
+echo "------------ `basename $0` $* at `date` --------------" | tee /dev/stderr
+
+case $1 in
+
+  start)
+    mkdir -p $LOG_DIR
+
+    service nfs-kernel-server start \
+      >> $LOG_DIR/nfsserver.stdout.log \
+      2>> $LOG_DIR/nfsserver.stderr.log
+
+    while [ "$(pidof -s nfsd)" == "" ]; do
+      sleep 1
+    done
+
+    mkdir -p $RUN_DIR
+    pidof -s nfsd > $PIDFILE
+    ;;
+
+  stop)
+    service nfs-kernel-server stop
+    ;;
+
+  *)
+    echo "Usage: nfsserver_ctl {start|stop}"
+
+    ;;
+
+esac
