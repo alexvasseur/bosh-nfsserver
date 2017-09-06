@@ -28,7 +28,7 @@ instance_groups:
   jobs:
   - name: nfsserver
     release: nfsserver
-  properties:
+#  properties:
   env:
     bosh:
       password: ((vm_password))
