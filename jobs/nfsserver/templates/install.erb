@@ -14,7 +14,7 @@ chmod 775 <%= p("nfsserver.export_root_path") %>/export/vol1
 
 chown vcap:vcap <%= p("nfsserver.export_root_path") %>/export/vol1
 
-chown -R vcap:vcap <%= p("nfsserver.export_root_path") %>/export/vol1
+# chown -R vcap:vcap <%= p("nfsserver.export_root_path") %>/export/vol1
 
 mkdir -p /export
 mount --bind <%= p("nfsserver.export_root_path") %>/export /export || true
