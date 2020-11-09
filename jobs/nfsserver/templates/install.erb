@@ -7,20 +7,20 @@ echo "Installing nfs server"
 apt-get update
 apt-get --assume-yes install nfs-kernel-server
 
-mkdir -p <%= p("nfsserver.export_root_path") %>/export/vol1
+mkdir -p <%= p("nfsserver.export_root_path") %>/export/<%= p("nfsserver.volume_path") %>
 
 chmod 777 <%= p("nfsserver.export_root_path") %>/export
-chmod 775 <%= p("nfsserver.export_root_path") %>/export/vol1
+chmod 775 <%= p("nfsserver.export_root_path") %>/export/<%= p("nfsserver.volume_path") %>
 
-chown vcap:vcap <%= p("nfsserver.export_root_path") %>/export/vol1
+chown vcap:vcap <%= p("nfsserver.export_root_path") %>/export/<%= p("nfsserver.volume_path") %>
 
-# chown -R vcap:vcap <%= p("nfsserver.export_root_path") %>/export/vol1
+# chown -R vcap:vcap <%= p("nfsserver.export_root_path") %>/export/<%= p("nfsserver.volume_path") %>
 
 mkdir -p /export
 mount --bind <%= p("nfsserver.export_root_path") %>/export /export || true
 
 cat << EOF > /etc/exports
-/export/vol1   <%= p("nfsserver.export_cidr") %>(all_squash,anonuid=1000,anongid=1000,rw,nohide,no_subtree_check,async)
+/export/<%= p("nfsserver.volume_path") %>   <%= p("nfsserver.export_cidr") %>(all_squash,anonuid=1000,anongid=1000,rw,nohide,no_subtree_check,async)
 EOF
 
 exit 0
